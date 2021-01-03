@@ -1,11 +1,15 @@
+import click
 from PIL import Image
 import numpy as np
 
 # need a string of chars to represent greyscale values from black > white
 # credit to Paul Bourke (http://paulbourke.net/dataformats/asciiart/)
+
+# more detailed list
 chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
 char_list = [char for char in chars]
 
+# less detailed list
 chars_2 = " .:-=+*#%@"
 char_list2 = [char for char in chars_2[::-1]]
 
@@ -80,22 +84,41 @@ def ascii_chars_to_image(ascii_chars, width=250):
     )
 
 
-def main():
+# def main():
 
-    desired_width = 400
+#     desired_width = 400
 
-    image = create_pil_image("nathan2.jpg")
+#     image = create_pil_image("nathan2.jpg")
 
-    grey_image = to_greyscale(resize_image(image, desired_width))
+#     grey_image = to_greyscale(resize_image(image, desired_width))
+
+#     ascii_chars = pixel_to_ascii(grey_image, char_list2)
+
+#     ascii_image = ascii_chars_to_image(ascii_chars, desired_width)
+
+#     with open("test.txt", "w") as art:
+#         art.write(ascii_image)
+
+
+@click.command()
+@click.option("-w", "--width", default=400)
+@click.argument("filepath")
+def main(filepath, width):
+    image = create_pil_image(filepath)
+
+    grey_image = to_greyscale(resize_image(image, width))
 
     ascii_chars = pixel_to_ascii(grey_image, char_list2)
 
-    ascii_image = ascii_chars_to_image(ascii_chars, desired_width)
+    ascii_image = ascii_chars_to_image(ascii_chars, width)
 
-    with open("test.txt", "w") as art:
+    art_filename = f"ascii_{filepath}"
+
+    with open(art_filename, "w") as art:
         art.write(ascii_image)
+
+    click.echo("Success!!!, art written to {}".format(art_filename))
 
 
 if __name__ == "__main__":
-
     main()
